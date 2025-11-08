@@ -166,18 +166,18 @@ const ResultsDisplay = ({ results }) => {
           border: "none",
           borderRadius: 12,
         }}
-        styles={{ body: { padding: 32 } }}
+        styles={{ body: { padding: "clamp(20px, 4vw, 32px)" } }}
       >
-        <Row justify="space-between" align="middle">
-          <Col>
-            <Title level={3} style={{ margin: 0, color: "#ffffff" }}>
+        <Row justify="space-between" align="middle" gutter={[16, 16]}>
+          <Col xs={24} sm={14} md={16}>
+            <Title level={3} style={{ margin: 0, color: "#ffffff", fontSize: "clamp(18px, 4vw, 24px)" }}>
               Analysis Complete
             </Title>
-            <Paragraph style={{ margin: "8px 0 0 0", color: "#d4d4d4", fontSize: 15 }}>
+            <Paragraph style={{ margin: "8px 0 0 0", color: "#d4d4d4", fontSize: "clamp(13px, 3.5vw, 15px)" }}>
               Your chat analysis is ready. Review the insights below and export your data.
             </Paragraph>
           </Col>
-          <Col>
+          <Col xs={24} sm={10} md={8} style={{ textAlign: typeof window !== "undefined" && window.innerWidth < 576 ? "center" : "right" }}>
             <Dropdown
               menu={{ items: exportMenuItems }}
               placement="bottomRight"
@@ -191,10 +191,12 @@ const ResultsDisplay = ({ results }) => {
                   background: "#ffffff",
                   color: "#262626",
                   border: "none",
-                  height: 48,
-                  padding: "0 32px",
+                  height: "clamp(40px, 10vw, 48px)",
+                  padding: "0 clamp(20px, 5vw, 32px)",
                   fontWeight: 600,
                   borderRadius: 8,
+                  fontSize: "clamp(14px, 3.5vw, 16px)",
+                  width: typeof window !== "undefined" && window.innerWidth < 576 ? "100%" : "auto",
                 }}
               >
                 Export Data
@@ -209,36 +211,36 @@ const ResultsDisplay = ({ results }) => {
         <Col xs={24} sm={12} lg={6}>
           <Card
             style={{ background: "#ffffff", borderRadius: 12, border: "1px solid #e5e5e5" }}
-            styles={{ body: { padding: 24 } }}
+            styles={{ body: { padding: "clamp(16px, 4vw, 24px)" } }}
           >
             <Statistic
               title={
                 <Space size={8}>
-                  <MessageOutlined style={{ color: "#525252" }} />
-                  <Text style={{ color: "#737373", fontSize: 14 }}>Total Activities</Text>
+                  <MessageOutlined style={{ color: "#525252", fontSize: "clamp(12px, 3vw, 14px)" }} />
+                  <Text style={{ color: "#737373", fontSize: "clamp(12px, 3vw, 14px)" }}>Total Activities</Text>
                 </Space>
               }
               value={summary.totalActivities}
-              valueStyle={{ color: "#262626", fontWeight: 700, fontSize: 32 }}
+              valueStyle={{ color: "#262626", fontWeight: 700, fontSize: "clamp(24px, 6vw, 32px)" }}
             />
           </Card>
         </Col>
         <Col xs={24} sm={12} lg={6}>
           <Card
             style={{ background: "#ffffff", borderRadius: 12, border: "1px solid #e5e5e5" }}
-            styles={{ body: { padding: 24 } }}
+            styles={{ body: { padding: "clamp(16px, 4vw, 24px)" } }}
           >
             <Statistic
               title={
                 <Space size={8}>
-                  <CalendarOutlined style={{ color: "#525252" }} />
-                  <Text style={{ color: "#737373", fontSize: 14 }}>Meetings</Text>
+                  <CalendarOutlined style={{ color: "#525252", fontSize: "clamp(12px, 3vw, 14px)" }} />
+                  <Text style={{ color: "#737373", fontSize: "clamp(12px, 3vw, 14px)" }}>Meetings</Text>
                 </Space>
               }
               value={summary.meetings || 0}
-              valueStyle={{ color: "#262626", fontWeight: 700, fontSize: 32 }}
+              valueStyle={{ color: "#262626", fontWeight: 700, fontSize: "clamp(24px, 6vw, 32px)" }}
               suffix={
-                <Text style={{ fontSize: 14, color: "#737373" }}>
+                <Text style={{ fontSize: "clamp(12px, 3vw, 14px)", color: "#737373" }}>
                   ({summary.totalActivities > 0 ? Math.round((summary.meetings / summary.totalActivities) * 100) : 0}%)
                 </Text>
               }
@@ -248,30 +250,30 @@ const ResultsDisplay = ({ results }) => {
         <Col xs={24} sm={12} lg={6}>
           <Card
             style={{ background: "#ffffff", borderRadius: 12, border: "1px solid #e5e5e5" }}
-            styles={{ body: { padding: 24 } }}
+            styles={{ body: { padding: "clamp(16px, 4vw, 24px)" } }}
           >
             <Statistic
               title={
                 <Space size={8}>
-                  <UserOutlined style={{ color: "#525252" }} />
-                  <Text style={{ color: "#737373", fontSize: 14 }}>Active Participants</Text>
+                  <UserOutlined style={{ color: "#525252", fontSize: "clamp(12px, 3vw, 14px)" }} />
+                  <Text style={{ color: "#737373", fontSize: "clamp(12px, 3vw, 14px)" }}>Active Participants</Text>
                 </Space>
               }
               value={summary.participants || 0}
-              valueStyle={{ color: "#262626", fontWeight: 700, fontSize: 32 }}
+              valueStyle={{ color: "#262626", fontWeight: 700, fontSize: "clamp(24px, 6vw, 32px)" }}
             />
           </Card>
         </Col>
         <Col xs={24} sm={12} lg={6}>
           <Card
             style={{ background: "#ffffff", borderRadius: 12, border: "1px solid #e5e5e5" }}
-            styles={{ body: { padding: 24 } }}
+            styles={{ body: { padding: "clamp(16px, 4vw, 24px)" } }}
           >
             <Statistic
               title={
                 <Space size={8}>
-                  <ClockCircleOutlined style={{ color: "#525252" }} />
-                  <Text style={{ color: "#737373", fontSize: 14 }}>Date Range</Text>
+                  <ClockCircleOutlined style={{ color: "#525252", fontSize: "clamp(12px, 3vw, 14px)" }} />
+                  <Text style={{ color: "#737373", fontSize: "clamp(12px, 3vw, 14px)" }}>Date Range</Text>
                 </Space>
               }
               value={
@@ -279,9 +281,9 @@ const ResultsDisplay = ({ results }) => {
                   ? summary.dateRange.split(" - ")[0]
                   : summary.dateRange?.start || "N/A"
               }
-              valueStyle={{ color: "#262626", fontWeight: 600, fontSize: 16 }}
+              valueStyle={{ color: "#262626", fontWeight: 600, fontSize: "clamp(14px, 3.5vw, 16px)" }}
               suffix={
-                <Text style={{ fontSize: 12, color: "#737373" }}>
+                <Text style={{ fontSize: "clamp(10px, 2.5vw, 12px)", color: "#737373" }}>
                   to{" "}
                   {typeof summary.dateRange === "string"
                     ? summary.dateRange.split(" - ")[1]
@@ -312,14 +314,14 @@ const ResultsDisplay = ({ results }) => {
                 </Space>
               ),
               children: (
-                <div style={{ padding: "0 24px 24px" }}>
+                <div style={{ padding: "0 clamp(16px, 4vw, 24px) clamp(16px, 4vw, 24px)" }}>
                   <Space direction="vertical" size={16} style={{ width: "100%" }}>
                     <div>
-                      <Title level={5} style={{ color: "#262626", marginBottom: 12 }}>
+                      <Title level={5} style={{ color: "#262626", marginBottom: 12, fontSize: "clamp(14px, 3.5vw, 16px)" }}>
                         Summary
                       </Title>
                       <Row gutter={[16, 16]}>
-                        <Col span={12}>
+                        <Col xs={24} sm={12}>
                           <Card
                             size="small"
                             style={{ background: "#fafafa", border: "1px solid #e5e5e5" }}
@@ -327,11 +329,11 @@ const ResultsDisplay = ({ results }) => {
                             <Statistic
                               title="Work Activities"
                               value={summary.workItems || 0}
-                              valueStyle={{ color: "#262626", fontSize: 24 }}
+                              valueStyle={{ color: "#262626", fontSize: "clamp(20px, 5vw, 24px)" }}
                             />
                           </Card>
                         </Col>
-                        <Col span={12}>
+                        <Col xs={24} sm={12}>
                           <Card
                             size="small"
                             style={{ background: "#fafafa", border: "1px solid #e5e5e5" }}
@@ -339,7 +341,7 @@ const ResultsDisplay = ({ results }) => {
                             <Statistic
                               title="Top Contributor"
                               value={summary.topContributor ? summary.topContributor[0] : "N/A"}
-                              valueStyle={{ color: "#262626", fontSize: 18 }}
+                              valueStyle={{ color: "#262626", fontSize: "clamp(16px, 4vw, 18px)" }}
                             />
                           </Card>
                         </Col>
@@ -358,7 +360,7 @@ const ResultsDisplay = ({ results }) => {
                 </Space>
               ),
               children: (
-                <div style={{ padding: "0 24px 24px" }}>
+                <div style={{ padding: "0 clamp(12px, 3vw, 24px) clamp(12px, 3vw, 24px)" }}>
                   <Table
                     columns={tableColumns}
                     dataSource={tableData}
@@ -366,9 +368,10 @@ const ResultsDisplay = ({ results }) => {
                       pageSize: 10,
                       showSizeChanger: true,
                       showTotal: (total) => `Total ${total} activities`,
+                      simple: typeof window !== "undefined" && window.innerWidth < 576,
                     }}
                     scroll={{ x: 800 }}
-                    size="middle"
+                    size={typeof window !== "undefined" && window.innerWidth < 768 ? "small" : "middle"}
                   />
                 </div>
               ),

@@ -45,23 +45,24 @@ const FileUpload = ({
           borderRadius: 12,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Space size={16}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+          <Space size={12} style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
-                width: 48,
-                height: 48,
+                width: 40,
+                height: 40,
                 background: "linear-gradient(135deg, #262626 0%, #404040 100%)",
                 borderRadius: 10,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                flexShrink: 0,
               }}
             >
-              <FileTextOutlined style={{ fontSize: 24, color: "#ffffff" }} />
+              <FileTextOutlined style={{ fontSize: 20, color: "#ffffff" }} />
             </div>
-            <div>
-              <Text strong style={{ fontSize: 15, color: "#262626", display: "block" }}>
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <Text strong style={{ fontSize: 15, color: "#262626", display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {selectedFile.name}
               </Text>
               <Space size={8} style={{ marginTop: 4 }}>
@@ -86,6 +87,7 @@ const FileUpload = ({
             disabled={processing}
             style={{
               borderRadius: 8,
+              flexShrink: 0,
             }}
           />
         </div>
@@ -123,7 +125,7 @@ const FileUpload = ({
             background: dragActive ? "#fafafa" : "transparent",
             border: "2px dashed #d4d4d4",
             borderRadius: 12,
-            padding: 48,
+            padding: "clamp(24px, 5vw, 48px)",
             transition: "all 0.3s",
           }}
           onDragEnter={() => setDragActive(true)}
@@ -132,24 +134,24 @@ const FileUpload = ({
           <div style={{ textAlign: "center" }}>
             <div
               style={{
-                width: 72,
-                height: 72,
+                width: "clamp(56px, 15vw, 72px)",
+                height: "clamp(56px, 15vw, 72px)",
                 background: "linear-gradient(135deg, #262626 0%, #404040 100%)",
                 borderRadius: 16,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                margin: "0 auto 24px",
+                margin: "0 auto clamp(16px, 3vw, 24px)",
               }}
             >
-              <InboxOutlined style={{ fontSize: 36, color: "#ffffff" }} />
+              <InboxOutlined style={{ fontSize: "clamp(28px, 7vw, 36px)", color: "#ffffff" }} />
             </div>
 
-            <Title level={4} style={{ color: "#262626", marginBottom: 8 }}>
+            <Title level={4} style={{ color: "#262626", marginBottom: 8, fontSize: "clamp(16px, 4vw, 20px)" }}>
               Upload WhatsApp Chat Export
             </Title>
 
-            <Paragraph style={{ color: "#525252", fontSize: 15, marginBottom: 24 }}>
+            <Paragraph style={{ color: "#525252", fontSize: "clamp(13px, 3.5vw, 15px)", marginBottom: "clamp(16px, 3vw, 24px)" }}>
               Drag and drop your .txt file here, or click to browse
             </Paragraph>
 
@@ -160,9 +162,10 @@ const FileUpload = ({
                 background: "linear-gradient(135deg, #262626 0%, #404040 100%)",
                 border: "none",
                 borderRadius: 8,
-                height: 48,
-                padding: "0 32px",
+                height: "clamp(40px, 10vw, 48px)",
+                padding: "0 clamp(20px, 5vw, 32px)",
                 fontWeight: 600,
+                fontSize: "clamp(14px, 3.5vw, 16px)",
               }}
             >
               Choose File
@@ -172,13 +175,13 @@ const FileUpload = ({
 
         <div
           style={{
-            padding: 32,
+            padding: "clamp(16px, 4vw, 32px)",
             background: "#fafafa",
             borderTop: "1px solid #e5e5e5",
             borderRadius: "0 0 12px 12px",
           }}
         >
-          <Text strong style={{ color: "#262626", fontSize: 14, display: "block", marginBottom: 16 }}>
+          <Text strong style={{ color: "#262626", fontSize: "clamp(13px, 3.5vw, 14px)", display: "block", marginBottom: "clamp(12px, 3vw, 16px)" }}>
             How to export WhatsApp chat
           </Text>
 
@@ -189,25 +192,25 @@ const FileUpload = ({
               'Choose "Without Media"',
               "Save as .txt file",
             ].map((step, index) => (
-              <div key={index} style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+              <div key={index} style={{ display: "flex", alignItems: "flex-start", gap: "clamp(8px, 2vw, 12px)" }}>
                 <div
                   style={{
-                    width: 24,
-                    height: 24,
+                    width: "clamp(20px, 5vw, 24px)",
+                    height: "clamp(20px, 5vw, 24px)",
                     background: "linear-gradient(135deg, #262626 0%, #404040 100%)",
                     borderRadius: 6,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     flexShrink: 0,
-                    fontSize: 12,
+                    fontSize: "clamp(10px, 2.5vw, 12px)",
                     fontWeight: 600,
                     color: "#ffffff",
                   }}
                 >
                   {index + 1}
                 </div>
-                <Text style={{ color: "#525252", fontSize: 14 }}>{step}</Text>
+                <Text style={{ color: "#525252", fontSize: "clamp(12px, 3vw, 14px)", flex: 1 }}>{step}</Text>
               </div>
             ))}
           </Space>

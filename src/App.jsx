@@ -80,55 +80,75 @@ function App() {
       }}
     >
       <Layout style={{ minHeight: "100vh", background: "#fafafa" }}>
-        {/* Header */}
+        {/* Header - Responsive */}
         <Header
           style={{
             background: "#ffffff",
             borderBottom: "1px solid #e5e5e5",
-            padding: "0 48px",
+            padding: "0 16px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            height: 80,
+            height: "auto",
+            minHeight: 64,
             position: "sticky",
             top: 0,
             zIndex: 100,
             boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
           }}
         >
-          <Space size={16} align="center">
+          <Space size={12} align="center" style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
-                width: 48,
-                height: 48,
+                width: 40,
+                height: 40,
                 background: "linear-gradient(135deg, #262626 0%, #404040 100%)",
-                borderRadius: 12,
+                borderRadius: 10,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                flexShrink: 0,
               }}
             >
-              <MessageOutlined style={{ fontSize: 24, color: "#ffffff" }} />
+              <MessageOutlined style={{ fontSize: 20, color: "#ffffff" }} />
             </div>
-            <div>
-              <Title level={3} style={{ margin: 0, color: "#262626", fontSize: 24 }}>
-                WhatsApp Chat Analyzer
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <Title
+                level={4}
+                style={{
+                  margin: 0,
+                  color: "#262626",
+                  fontSize: "clamp(16px, 4vw, 20px)",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                WhatsApp Analyzer
               </Title>
-              <Paragraph style={{ margin: 0, color: "#737373", fontSize: 14 }}>
-                Transform conversations into actionable insights
+              <Paragraph
+                style={{
+                  margin: 0,
+                  color: "#737373",
+                  fontSize: 12,
+                  display: window.innerWidth < 480 ? "none" : "block",
+                }}
+              >
+                Transform conversations
               </Paragraph>
             </div>
           </Space>
           <Button
             type="text"
             size="large"
-            icon={<SettingOutlined style={{ fontSize: 20 }} />}
+            icon={<SettingOutlined style={{ fontSize: 18 }} />}
             onClick={() => setShowSettings(true)}
             style={{
-              height: 48,
-              width: 48,
-              borderRadius: 12,
+              height: 40,
+              width: 40,
+              borderRadius: 10,
               color: "#525252",
+              flexShrink: 0,
             }}
           />
         </Header>
@@ -151,10 +171,10 @@ function App() {
                 <SettingOutlined style={{ fontSize: 20, color: "#ffffff" }} />
               </div>
               <div>
-                <div style={{ fontSize: 18, fontWeight: 600, color: "#262626" }}>
+                <div style={{ fontSize: "clamp(16px, 4vw, 18px)", fontWeight: 600, color: "#262626" }}>
                   Settings
                 </div>
-                <div style={{ fontSize: 13, color: "#737373", fontWeight: 400 }}>
+                <div style={{ fontSize: "clamp(11px, 3vw, 13px)", color: "#737373", fontWeight: 400 }}>
                   Customize keyword detection
                 </div>
               </div>
@@ -163,10 +183,10 @@ function App() {
           placement="right"
           onClose={() => setShowSettings(false)}
           open={showSettings}
-          width={520}
+          width={typeof window !== "undefined" && window.innerWidth < 768 ? "90vw" : 520}
           styles={{
-            body: { padding: 24, background: "#fafafa" },
-            header: { borderBottom: "1px solid #e5e5e5", padding: "20px 24px" },
+            body: { padding: "clamp(16px, 4vw, 24px)", background: "#fafafa" },
+            header: { borderBottom: "1px solid #e5e5e5", padding: "clamp(16px, 4vw, 20px) clamp(16px, 4vw, 24px)" },
           }}
         >
           <KeywordManager
@@ -183,7 +203,7 @@ function App() {
         </Drawer>
 
         {/* Main Content */}
-        <Content style={{ padding: "48px", maxWidth: 1400, margin: "0 auto", width: "100%" }}>
+        <Content style={{ padding: "clamp(16px, 4vw, 48px)", maxWidth: 1400, margin: "0 auto", width: "100%" }}>
           {!results ? (
             <Space direction="vertical" size={32} style={{ width: "100%" }}>
               <FileUpload
@@ -226,14 +246,14 @@ function App() {
                   style={{
                     background: "#ffffff",
                     borderRadius: 12,
-                    padding: 48,
+                    padding: "clamp(24px, 5vw, 48px)",
                     border: "1px solid #e5e5e5",
                   }}
                 >
-                  <Title level={4} style={{ color: "#262626", marginBottom: 16 }}>
+                  <Title level={4} style={{ color: "#262626", marginBottom: "clamp(12px, 3vw, 16px)", fontSize: "clamp(18px, 4vw, 20px)" }}>
                     Get Started
                   </Title>
-                  <Paragraph style={{ color: "#525252", fontSize: 15, marginBottom: 32 }}>
+                  <Paragraph style={{ color: "#525252", fontSize: "clamp(13px, 3.5vw, 15px)", marginBottom: "clamp(20px, 4vw, 32px)" }}>
                     Transform your WhatsApp group chats into organized work reports.
                     Perfect for tracking team progress, meetings, and project activities.
                   </Paragraph>
@@ -241,8 +261,8 @@ function App() {
                   <div
                     style={{
                       display: "grid",
-                      gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-                      gap: 24,
+                      gridTemplateColumns: "repeat(auto-fit, minmax(clamp(150px, 40vw, 200px), 1fr))",
+                      gap: "clamp(12px, 3vw, 24px)",
                     }}
                   >
                     {[
@@ -254,7 +274,7 @@ function App() {
                         key={index}
                         style={{
                           textAlign: "center",
-                          padding: 24,
+                          padding: "clamp(16px, 4vw, 24px)",
                           background: "#fafafa",
                           borderRadius: 8,
                           border: "1px solid #e5e5e5",
@@ -262,24 +282,24 @@ function App() {
                       >
                         <div
                           style={{
-                            width: 56,
-                            height: 56,
+                            width: "clamp(48px, 12vw, 56px)",
+                            height: "clamp(48px, 12vw, 56px)",
                             background: "linear-gradient(135deg, #262626 0%, #404040 100%)",
                             borderRadius: 12,
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            margin: "0 auto 16px",
-                            fontSize: 24,
+                            margin: "0 auto clamp(12px, 3vw, 16px)",
+                            fontSize: "clamp(20px, 5vw, 24px)",
                             color: "#ffffff",
                           }}
                         >
                           {step.icon}
                         </div>
-                        <Title level={5} style={{ marginBottom: 8, color: "#262626" }}>
+                        <Title level={5} style={{ marginBottom: 8, color: "#262626", fontSize: "clamp(14px, 3.5vw, 16px)" }}>
                           {step.title}
                         </Title>
-                        <Paragraph style={{ margin: 0, color: "#737373", fontSize: 13 }}>
+                        <Paragraph style={{ margin: 0, color: "#737373", fontSize: "clamp(11px, 3vw, 13px)" }}>
                           {step.desc}
                         </Paragraph>
                       </div>

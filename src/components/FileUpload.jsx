@@ -1,122 +1,219 @@
 import React, { useRef, useState } from "react";
-import { Upload, FileText, X } from "lucide-react";
-import Button from "./ui/Button";
-import Card from "./ui/Card";
+import { Upload as AntUpload, Card, Button, Typography, Space, Alert, Tag } from "antd";
+import {
+  InboxOutlined,
+  FileTextOutlined,
+  CloseOutlined,
+  CheckCircleOutlined,
+} from "@ant-design/icons";
+
+const { Dragger } = AntUpload;
+const { Title, Paragraph, Text } = Typography;
 
 const FileUpload = ({
   onFileSelect,
   selectedFile,
   onRemoveFile,
   processing,
+  error,
+  clearError,
 }) => {
-  const fileInputRef = useRef(null);
   const [dragActive, setDragActive] = useState(false);
-
-  const handleDrag = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true);
-    } else if (e.type === "dragleave") {
-      setDragActive(false);
-    }
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFile(e.dataTransfer.files[0]);
-    }
-  };
-
-  const handleChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      handleFile(e.target.files[0]);
-    }
-  };
 
   const handleFile = (file) => {
     if (file.name.endsWith(".txt")) {
       onFileSelect(file);
-    } else {
-      alert("Please upload a .txt file exported from WhatsApp");
     }
+    return false; // Prevent default upload
   };
 
-  const openFileDialog = () => {
-    fileInputRef.current?.click();
+  const uploadProps = {
+    name: "file",
+    multiple: false,
+    accept: ".txt",
+    beforeUpload: handleFile,
+    showUploadList: false,
+    onDrop: () => setDragActive(false),
   };
 
   if (selectedFile) {
     return (
-      <Card>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <FileText className="w-8 h-8 text-primary-600" />
-            <div>
-              <p className="font-medium text-gray-900">{selectedFile.name}</p>
-              <p className="text-sm text-gray-500">
-                {(selectedFile.size / 1024).toFixed(1)} KB
-              </p>
+      <Card
+        style={{
+          background: "#ffffff",
+          border: "1px solid #d4d4d4",
+          borderRadius: 12,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Space size={16}>
+            <div
+              style={{
+                width: 48,
+                height: 48,
+                background: "linear-gradient(135deg, #262626 0%, #404040 100%)",
+                borderRadius: 10,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <FileTextOutlined style={{ fontSize: 24, color: "#ffffff" }} />
             </div>
-          </div>
+            <div>
+              <Text strong style={{ fontSize: 15, color: "#262626", display: "block" }}>
+                {selectedFile.name}
+              </Text>
+              <Space size={8} style={{ marginTop: 4 }}>
+                <Text type="secondary" style={{ fontSize: 13 }}>
+                  {(selectedFile.size / 1024).toFixed(1)} KB
+                </Text>
+                <Tag
+                  icon={<CheckCircleOutlined />}
+                  color="success"
+                  style={{ margin: 0, borderRadius: 4 }}
+                >
+                  Ready
+                </Tag>
+              </Space>
+            </div>
+          </Space>
           <Button
-            variant="ghost"
-            size="sm"
+            type="text"
+            danger
+            icon={<CloseOutlined />}
             onClick={onRemoveFile}
             disabled={processing}
-          >
-            <X className="w-4 h-4" />
-          </Button>
+            style={{
+              borderRadius: 8,
+            }}
+          />
         </div>
       </Card>
     );
   }
 
   return (
-    <Card>
-      <div
-        className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors duration-200 ${
-          dragActive
-            ? "border-primary-500 bg-primary-50"
-            : "border-gray-300 hover:border-gray-400"
-        }`}
-        onDragEnter={handleDrag}
-        onDragLeave={handleDrag}
-        onDragOver={handleDrag}
-        onDrop={handleDrop}
+    <div>
+      {error && (
+        <Alert
+          message="Processing Error"
+          description={error}
+          type="error"
+          closable
+          onClose={clearError}
+          style={{
+            marginBottom: 24,
+            borderRadius: 8,
+          }}
+        />
+      )}
+
+      <Card
+        style={{
+          background: "#ffffff",
+          border: "1px solid #e5e5e5",
+          borderRadius: 12,
+        }}
+        bodyStyle={{ padding: 0 }}
       >
-        <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">
-          Upload WhatsApp Chat Export
-        </h3>
-        <p className="text-gray-600 mb-6">
-          Drag and drop your .txt file here, or click to select
-        </p>
-        <Button onClick={openFileDialog}>Choose File</Button>
+        <Dragger
+          {...uploadProps}
+          style={{
+            background: dragActive ? "#fafafa" : "transparent",
+            border: "2px dashed #d4d4d4",
+            borderRadius: 12,
+            padding: 48,
+            transition: "all 0.3s",
+          }}
+          onDragEnter={() => setDragActive(true)}
+          onDragLeave={() => setDragActive(false)}
+        >
+          <div style={{ textAlign: "center" }}>
+            <div
+              style={{
+                width: 72,
+                height: 72,
+                background: "linear-gradient(135deg, #262626 0%, #404040 100%)",
+                borderRadius: 16,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "0 auto 24px",
+              }}
+            >
+              <InboxOutlined style={{ fontSize: 36, color: "#ffffff" }} />
+            </div>
 
-        <div className="mt-6 text-sm text-gray-500">
-          <p className="font-medium mb-2">How to export WhatsApp chat:</p>
-          <ol className="text-left max-w-md mx-auto space-y-1">
-            <li>1. Open WhatsApp group/chat</li>
-            <li>2. Tap ⋮ (menu) → More → Export chat</li>
-            <li>3. Choose "Without Media"</li>
-            <li>4. Save as .txt file</li>
-          </ol>
+            <Title level={4} style={{ color: "#262626", marginBottom: 8 }}>
+              Upload WhatsApp Chat Export
+            </Title>
+
+            <Paragraph style={{ color: "#525252", fontSize: 15, marginBottom: 24 }}>
+              Drag and drop your .txt file here, or click to browse
+            </Paragraph>
+
+            <Button
+              type="primary"
+              size="large"
+              style={{
+                background: "linear-gradient(135deg, #262626 0%, #404040 100%)",
+                border: "none",
+                borderRadius: 8,
+                height: 48,
+                padding: "0 32px",
+                fontWeight: 600,
+              }}
+            >
+              Choose File
+            </Button>
+          </div>
+        </Dragger>
+
+        <div
+          style={{
+            padding: 32,
+            background: "#fafafa",
+            borderTop: "1px solid #e5e5e5",
+            borderRadius: "0 0 12px 12px",
+          }}
+        >
+          <Text strong style={{ color: "#262626", fontSize: 14, display: "block", marginBottom: 16 }}>
+            How to export WhatsApp chat
+          </Text>
+
+          <Space direction="vertical" size={12} style={{ width: "100%" }}>
+            {[
+              "Open WhatsApp group/chat",
+              "Tap ⋮ (menu) → More → Export chat",
+              'Choose "Without Media"',
+              "Save as .txt file",
+            ].map((step, index) => (
+              <div key={index} style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+                <div
+                  style={{
+                    width: 24,
+                    height: 24,
+                    background: "linear-gradient(135deg, #262626 0%, #404040 100%)",
+                    borderRadius: 6,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: "#ffffff",
+                  }}
+                >
+                  {index + 1}
+                </div>
+                <Text style={{ color: "#525252", fontSize: 14 }}>{step}</Text>
+              </div>
+            ))}
+          </Space>
         </div>
-      </div>
-
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept=".txt"
-        onChange={handleChange}
-        className="hidden"
-      />
-    </Card>
+      </Card>
+    </div>
   );
 };
 

@@ -1,270 +1,382 @@
-import React from "react";
+import React, { useState } from "react";
+import { Card, Button, Space, Typography, Statistic, Row, Col, Tabs, Table, Tag, Dropdown, message } from "antd";
 import {
-  Download,
-  BarChart3,
-  Calendar,
-  Users,
-  MessageCircle,
-  Clock,
-} from "lucide-react";
-import Button from "./ui/Button";
-import Card from "./ui/Card";
+  DownloadOutlined,
+  BarChartOutlined,
+  CalendarOutlined,
+  UserOutlined,
+  MessageOutlined,
+  ClockCircleOutlined,
+  FileExcelOutlined,
+  FileTextOutlined,
+  FilePdfOutlined,
+  MoreOutlined,
+} from "@ant-design/icons";
 import { CSVExporter } from "../utils/csvExporter";
+
+const { Title, Text, Paragraph } = Typography;
 
 const ResultsDisplay = ({ results }) => {
   const { activities, summary } = results;
+  const [activeTab, setActiveTab] = useState("overview");
 
   const handleDownloadCSV = () => {
     const csvContent = CSVExporter.generateCSV(activities, summary);
     CSVExporter.downloadCSV(csvContent);
+    message.success("CSV file downloaded successfully!");
   };
 
   const handleDownloadJSON = () => {
     const jsonContent = CSVExporter.generateJSONReport(activities, summary);
     CSVExporter.downloadJSON(jsonContent);
+    message.success("JSON file downloaded successfully!");
   };
 
-  const StatCard = ({ icon: Icon, title, value, subtitle, color = "blue" }) => (
-    <div className="bg-white rounded-lg border border-gray-200 p-6">
-      <div className="flex items-center">
-        <div className={`p-2 rounded-lg bg-${color}-100`}>
-          <Icon className={`w-6 h-6 text-${color}-600`} />
-        </div>
-        <div className="ml-4">
-          <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className="text-2xl font-bold text-gray-900">{value}</p>
-          {subtitle && <p className="text-sm text-gray-500">{subtitle}</p>}
-        </div>
-      </div>
-    </div>
-  );
+  const handleDownloadExcel = () => {
+    message.info("Excel export coming soon!");
+  };
+
+  const exportMenuItems = [
+    {
+      key: "csv",
+      label: "Export as CSV",
+      icon: <FileTextOutlined />,
+      onClick: handleDownloadCSV,
+    },
+    {
+      key: "json",
+      label: "Export as JSON",
+      icon: <FileTextOutlined />,
+      onClick: handleDownloadJSON,
+    },
+    {
+      key: "excel",
+      label: "Export as Excel",
+      icon: <FileExcelOutlined />,
+      onClick: handleDownloadExcel,
+    },
+  ];
+
+  // Prepare table data
+  const tableColumns = [
+    {
+      title: "Date",
+      dataIndex: "date",
+      key: "date",
+      sorter: (a, b) => new Date(a.date) - new Date(b.date),
+      width: 120,
+      render: (date) => (
+        <Text strong style={{ color: "#262626" }}>
+          {date}
+        </Text>
+      ),
+    },
+    {
+      title: "Time",
+      dataIndex: "time",
+      key: "time",
+      width: 100,
+      render: (time) => <Text style={{ color: "#525252" }}>{time}</Text>,
+    },
+    {
+      title: "Participant",
+      dataIndex: "sender",
+      key: "sender",
+      filters: [...new Set(activities.map((a) => a.sender))].map((p) => ({
+        text: p,
+        value: p,
+      })),
+      onFilter: (value, record) => record.sender === value,
+      width: 200,
+      ellipsis: true,
+      render: (sender) => (
+        <Space size={4}>
+          <UserOutlined style={{ color: "#737373", fontSize: 12 }} />
+          <Text>{sender}</Text>
+        </Space>
+      ),
+    },
+    {
+      title: "Message",
+      dataIndex: "message",
+      key: "message",
+      ellipsis: true,
+      render: (message) => <Text style={{ color: "#525252" }}>{message}</Text>,
+    },
+    {
+      title: "Category",
+      dataIndex: "category",
+      key: "category",
+      width: 140,
+      filters: [...new Set(activities.map((a) => a.category))].map((c) => ({
+        text: c,
+        value: c,
+      })),
+      onFilter: (value, record) => record.category === value,
+      render: (category) => (
+        <Tag
+          style={{
+            borderRadius: 4,
+            border: "1px solid #d4d4d4",
+            background: "#fafafa",
+            color: "#262626",
+          }}
+        >
+          {category}
+        </Tag>
+      ),
+    },
+    {
+      title: "Type",
+      dataIndex: "isMeeting",
+      key: "isMeeting",
+      width: 100,
+      filters: [
+        { text: "Work", value: false },
+        { text: "Meeting", value: true },
+      ],
+      onFilter: (value, record) => record.isMeeting === value,
+      render: (isMeeting) => (
+        <Tag
+          color={isMeeting ? "processing" : "default"}
+          style={{
+            borderRadius: 4,
+            border: "1px solid #d4d4d4",
+            background: isMeeting ? "#f0f0f0" : "#fafafa",
+            color: "#262626",
+          }}
+        >
+          {isMeeting ? "Meeting" : "Work"}
+        </Tag>
+      ),
+    },
+  ];
+
+  const tableData = activities.map((activity, index) => ({
+    key: index,
+    ...activity,
+  }));
 
   return (
-    <div className="space-y-6">
-      {/* Download Actions */}
-      <Card>
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900">
-              Analysis Complete! 🎉
-            </h3>
-            <p className="text-gray-600 mt-1">
-              Found {summary.totalActivities} work-related activities from{" "}
-              {summary.participants} participants
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Button onClick={handleDownloadJSON} variant="outline">
-              <Download className="w-4 h-4 mr-2" />
-              JSON
-            </Button>
-            <Button onClick={handleDownloadCSV}>
-              <Download className="w-4 h-4 mr-2" />
-              Excel/CSV
-            </Button>
-          </div>
-        </div>
-      </Card>
-
-      {/* Summary Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
-          icon={MessageCircle}
-          title="Total Activities"
-          value={summary.totalActivities}
-          color="blue"
-        />
-        <StatCard
-          icon={Calendar}
-          title="Meetings"
-          value={summary.meetings}
-          subtitle={`${(
-            (summary.meetings / summary.totalActivities) *
-            100
-          ).toFixed(1)}% of activities`}
-          color="green"
-        />
-        <StatCard
-          icon={Users}
-          title="Participants"
-          value={summary.participants}
-          subtitle={
-            summary.topContributor ? `Top: ${summary.topContributor[0]}` : ""
-          }
-          color="purple"
-        />
-        <StatCard
-          icon={Clock}
-          title="Date Range"
-          value={
-            summary.dateRange
-              ? Math.ceil(
-                  (new Date(summary.dateRange.end) -
-                    new Date(summary.dateRange.start)) /
-                    (1000 * 60 * 60 * 24)
-                )
-              : 0
-          }
-          subtitle={
-            summary.dateRange
-              ? `${summary.dateRange.start} to ${summary.dateRange.end}`
-              : "N/A"
-          }
-          color="orange"
-        />
-      </div>
-
-      {/* Categories Breakdown */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card title="Activities by Category">
-          <div className="space-y-3">
-            {Object.entries(summary.categories).map(([category, count]) => (
-              <div key={category} className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700">
-                  {category}
-                </span>
-                <div className="flex items-center gap-2">
-                  <div className="w-24 bg-gray-200 rounded-full h-2">
-                    <div
-                      className="bg-blue-600 h-2 rounded-full"
-                      style={{
-                        width: `${(count / summary.totalActivities) * 100}%`,
-                      }}
-                    ></div>
-                  </div>
-                  <span className="text-sm font-bold text-gray-900">
-                    {count}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        <Card title="Priority Distribution">
-          <div className="space-y-3">
-            {Object.entries(summary.priorities).map(([priority, count]) => {
-              const colors = {
-                High: "bg-red-600",
-                Medium: "bg-yellow-600",
-                Low: "bg-green-600",
-              };
-              return (
-                <div
-                  key={priority}
-                  className="flex items-center justify-between"
-                >
-                  <span className="text-sm font-medium text-gray-700">
-                    {priority} Priority
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <div className="w-24 bg-gray-200 rounded-full h-2">
-                      <div
-                        className={`h-2 rounded-full ${colors[priority]}`}
-                        style={{
-                          width: `${(count / summary.totalActivities) * 100}%`,
-                        }}
-                      ></div>
-                    </div>
-                    <span className="text-sm font-bold text-gray-900">
-                      {count}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </Card>
-      </div>
-
-      {/* Recent Activities Table */}
+    <Space direction="vertical" size={24} style={{ width: "100%" }}>
+      {/* Header Card */}
       <Card
-        title="Recent Activities"
-        subtitle={`Showing latest ${Math.min(
-          10,
-          activities.length
-        )} activities`}
+        style={{
+          background: "linear-gradient(135deg, #262626 0%, #404040 100%)",
+          border: "none",
+          borderRadius: 12,
+        }}
+        styles={{ body: { padding: 32 } }}
       >
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Date
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Person
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Category
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Message
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {activities
-                .slice(-10)
-                .reverse()
-                .map((activity, index) => (
-                  <tr key={index} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {activity.date}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {activity.sender}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                          activity.category === "Meeting"
-                            ? "bg-green-100 text-green-800"
-                            : activity.category === "Development"
-                            ? "bg-blue-100 text-blue-800"
-                            : activity.category === "Bug/Issue"
-                            ? "bg-red-100 text-red-800"
-                            : "bg-gray-100 text-gray-800"
-                        }`}
-                      >
-                        {activity.category}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-900 max-w-md truncate">
-                      {activity.message}
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
-      </Card>
-
-      {/* Participants List */}
-      <Card
-        title="Team Members"
-        subtitle={`${summary.participants} active participants`}
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          {summary.participantsList.map((participant) => {
-            const participantActivities = activities.filter(
-              (a) => a.sender === participant
-            ).length;
-            return (
-              <div
-                key={participant}
-                className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+        <Row justify="space-between" align="middle">
+          <Col>
+            <Title level={3} style={{ margin: 0, color: "#ffffff" }}>
+              Analysis Complete
+            </Title>
+            <Paragraph style={{ margin: "8px 0 0 0", color: "#d4d4d4", fontSize: 15 }}>
+              Your chat analysis is ready. Review the insights below and export your data.
+            </Paragraph>
+          </Col>
+          <Col>
+            <Dropdown
+              menu={{ items: exportMenuItems }}
+              placement="bottomRight"
+              trigger={["click"]}
+            >
+              <Button
+                type="primary"
+                size="large"
+                icon={<DownloadOutlined />}
+                style={{
+                  background: "#ffffff",
+                  color: "#262626",
+                  border: "none",
+                  height: 48,
+                  padding: "0 32px",
+                  fontWeight: 600,
+                  borderRadius: 8,
+                }}
               >
-                <span className="font-medium text-gray-900">{participant}</span>
-                <span className="text-sm text-gray-500">
-                  {participantActivities} activities
-                </span>
-              </div>
-            );
-          })}
-        </div>
+                Export Data
+              </Button>
+            </Dropdown>
+          </Col>
+        </Row>
       </Card>
-    </div>
+
+      {/* Statistics Cards */}
+      <Row gutter={[16, 16]}>
+        <Col xs={24} sm={12} lg={6}>
+          <Card
+            style={{ background: "#ffffff", borderRadius: 12, border: "1px solid #e5e5e5" }}
+            styles={{ body: { padding: 24 } }}
+          >
+            <Statistic
+              title={
+                <Space size={8}>
+                  <MessageOutlined style={{ color: "#525252" }} />
+                  <Text style={{ color: "#737373", fontSize: 14 }}>Total Activities</Text>
+                </Space>
+              }
+              value={summary.totalActivities}
+              valueStyle={{ color: "#262626", fontWeight: 700, fontSize: 32 }}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} lg={6}>
+          <Card
+            style={{ background: "#ffffff", borderRadius: 12, border: "1px solid #e5e5e5" }}
+            styles={{ body: { padding: 24 } }}
+          >
+            <Statistic
+              title={
+                <Space size={8}>
+                  <CalendarOutlined style={{ color: "#525252" }} />
+                  <Text style={{ color: "#737373", fontSize: 14 }}>Meetings</Text>
+                </Space>
+              }
+              value={summary.meetings || 0}
+              valueStyle={{ color: "#262626", fontWeight: 700, fontSize: 32 }}
+              suffix={
+                <Text style={{ fontSize: 14, color: "#737373" }}>
+                  ({summary.totalActivities > 0 ? Math.round((summary.meetings / summary.totalActivities) * 100) : 0}%)
+                </Text>
+              }
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} lg={6}>
+          <Card
+            style={{ background: "#ffffff", borderRadius: 12, border: "1px solid #e5e5e5" }}
+            styles={{ body: { padding: 24 } }}
+          >
+            <Statistic
+              title={
+                <Space size={8}>
+                  <UserOutlined style={{ color: "#525252" }} />
+                  <Text style={{ color: "#737373", fontSize: 14 }}>Active Participants</Text>
+                </Space>
+              }
+              value={summary.participants || 0}
+              valueStyle={{ color: "#262626", fontWeight: 700, fontSize: 32 }}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} lg={6}>
+          <Card
+            style={{ background: "#ffffff", borderRadius: 12, border: "1px solid #e5e5e5" }}
+            styles={{ body: { padding: 24 } }}
+          >
+            <Statistic
+              title={
+                <Space size={8}>
+                  <ClockCircleOutlined style={{ color: "#525252" }} />
+                  <Text style={{ color: "#737373", fontSize: 14 }}>Date Range</Text>
+                </Space>
+              }
+              value={
+                typeof summary.dateRange === "string"
+                  ? summary.dateRange.split(" - ")[0]
+                  : summary.dateRange?.start || "N/A"
+              }
+              valueStyle={{ color: "#262626", fontWeight: 600, fontSize: 16 }}
+              suffix={
+                <Text style={{ fontSize: 12, color: "#737373" }}>
+                  to{" "}
+                  {typeof summary.dateRange === "string"
+                    ? summary.dateRange.split(" - ")[1]
+                    : summary.dateRange?.end || "N/A"}
+                </Text>
+              }
+            />
+          </Card>
+        </Col>
+      </Row>
+
+      {/* Tabs for different views */}
+      <Card
+        style={{ background: "#ffffff", borderRadius: 12, border: "1px solid #e5e5e5" }}
+        styles={{ body: { padding: 0 } }}
+      >
+        <Tabs
+          activeKey={activeTab}
+          onChange={setActiveTab}
+          style={{ padding: "0 24px" }}
+          items={[
+            {
+              key: "overview",
+              label: (
+                <Space size={8}>
+                  <BarChartOutlined />
+                  <span>Overview</span>
+                </Space>
+              ),
+              children: (
+                <div style={{ padding: "0 24px 24px" }}>
+                  <Space direction="vertical" size={16} style={{ width: "100%" }}>
+                    <div>
+                      <Title level={5} style={{ color: "#262626", marginBottom: 12 }}>
+                        Summary
+                      </Title>
+                      <Row gutter={[16, 16]}>
+                        <Col span={12}>
+                          <Card
+                            size="small"
+                            style={{ background: "#fafafa", border: "1px solid #e5e5e5" }}
+                          >
+                            <Statistic
+                              title="Work Activities"
+                              value={summary.workItems || 0}
+                              valueStyle={{ color: "#262626", fontSize: 24 }}
+                            />
+                          </Card>
+                        </Col>
+                        <Col span={12}>
+                          <Card
+                            size="small"
+                            style={{ background: "#fafafa", border: "1px solid #e5e5e5" }}
+                          >
+                            <Statistic
+                              title="Top Contributor"
+                              value={summary.topContributor ? summary.topContributor[0] : "N/A"}
+                              valueStyle={{ color: "#262626", fontSize: 18 }}
+                            />
+                          </Card>
+                        </Col>
+                      </Row>
+                    </div>
+                  </Space>
+                </div>
+              ),
+            },
+            {
+              key: "activities",
+              label: (
+                <Space size={8}>
+                  <MessageOutlined />
+                  <span>All Activities</span>
+                </Space>
+              ),
+              children: (
+                <div style={{ padding: "0 24px 24px" }}>
+                  <Table
+                    columns={tableColumns}
+                    dataSource={tableData}
+                    pagination={{
+                      pageSize: 10,
+                      showSizeChanger: true,
+                      showTotal: (total) => `Total ${total} activities`,
+                    }}
+                    scroll={{ x: 800 }}
+                    size="middle"
+                  />
+                </div>
+              ),
+            },
+          ]}
+        />
+      </Card>
+    </Space>
   );
 };
 

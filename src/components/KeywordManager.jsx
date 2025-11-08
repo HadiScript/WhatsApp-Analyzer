@@ -1,8 +1,16 @@
 import React, { useState } from "react";
-import { Plus, X, RotateCcw } from "lucide-react";
-import Button from "./ui/Button";
-import Input from "./ui/Input";
-import Card from "./ui/Card";
+import { Card, Input, Button, Tag, Space, Typography, Collapse, Divider } from "antd";
+import {
+  PlusOutlined,
+  CloseOutlined,
+  // BriefcaseOutlined,
+  CalendarOutlined,
+  InfoCircleOutlined,
+} from "@ant-design/icons";
+import { Briefcase } from "lucide-react";
+
+const { Text, Paragraph } = Typography;
+const { Panel } = Collapse;
 
 const KeywordManager = ({
   customWorkKeywords,
@@ -37,146 +45,288 @@ const KeywordManager = ({
   };
 
   return (
-    <Card
-      title="Keyword Settings"
-      subtitle="Customize keywords to improve detection accuracy"
-    >
-      <div className="space-y-8">
-        {/* Default Keywords Info */}
-        <div className="bg-blue-50 rounded-lg p-4">
-          <h4 className="text-sm font-medium text-blue-900 mb-2">
-            Default Keywords Included
-          </h4>
-          <p className="text-sm text-blue-700 mb-3">
-            We've included{" "}
-            {defaultWorkKeywords.length + defaultMeetingKeywords.length} common
-            work and meeting keywords. Add your own to improve detection for
-            your specific team.
-          </p>
-          <details className="text-sm">
-            <summary className="cursor-pointer text-blue-800 font-medium">
-              View default keywords (
-              {defaultWorkKeywords.length + defaultMeetingKeywords.length})
-            </summary>
-            <div className="mt-3 space-y-2">
-              <div>
-                <p className="font-medium text-blue-900">Work Keywords:</p>
-                <p className="text-blue-700">
-                  {defaultWorkKeywords.slice(0, 10).join(", ")}...
-                </p>
-              </div>
-              <div>
-                <p className="font-medium text-blue-900">Meeting Keywords:</p>
-                <p className="text-blue-700">
-                  {defaultMeetingKeywords.join(", ")}
-                </p>
-              </div>
-            </div>
-          </details>
-        </div>
+    <Space direction="vertical" size={16} style={{ width: "100%" }}>
+      {/* Info Card */}
+      <Card
+        style={{
+          background: "#ffffff",
+          borderRadius: 8,
+          border: "1px solid #e5e5e5",
+        }}
+        styles={{ body: { padding: 20 } }}
+      >
+        <Space size={12} align="start">
+          <InfoCircleOutlined style={{ fontSize: 20, color: "#525252" }} />
+          <div>
+            <Text strong style={{ color: "#262626", fontSize: 14, display: "block" }}>
+              Default Keywords Included
+            </Text>
+            <Paragraph style={{ margin: "4px 0 0 0", color: "#737373", fontSize: 13 }}>
+              We've included{" "}
+              <Text strong style={{ color: "#262626" }}>
+                {defaultWorkKeywords.length + defaultMeetingKeywords.length}
+              </Text>{" "}
+              common work and meeting keywords. Add your own to improve detection.
+            </Paragraph>
 
-        {/* Work Keywords */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">
-            Additional Work Keywords
-          </label>
-          <div className="flex gap-2 mb-4">
+            <Collapse
+              ghost
+              style={{ marginTop: 12 }}
+              expandIconPosition="end"
+              items={[
+                {
+                  key: "1",
+                  label: (
+                    <Text style={{ color: "#525252", fontSize: 13 }}>
+                      View default keywords
+                    </Text>
+                  ),
+                  children: (
+                    <Space direction="vertical" size={12} style={{ width: "100%" }}>
+                      <div>
+                        <Text strong style={{ color: "#262626", fontSize: 13 }}>
+                          <Briefcase style={{ marginRight: 6 }} />
+                          Work Keywords ({defaultWorkKeywords.length})
+                        </Text>
+                        <div style={{ marginTop: 8, display: "flex", flexWrap: "wrap", gap: 6 }}>
+                          {defaultWorkKeywords.map((kw) => (
+                            <Tag
+                              key={kw}
+                              style={{
+                                margin: 0,
+                                borderRadius: 4,
+                                border: "1px solid #d4d4d4",
+                                background: "#fafafa",
+                                color: "#525252",
+                              }}
+                            >
+                              {kw}
+                            </Tag>
+                          ))}
+                        </div>
+                      </div>
+                      <Divider style={{ margin: "8px 0" }} />
+                      <div>
+                        <Text strong style={{ color: "#262626", fontSize: 13 }}>
+                          <CalendarOutlined style={{ marginRight: 6 }} />
+                          Meeting Keywords ({defaultMeetingKeywords.length})
+                        </Text>
+                        <div style={{ marginTop: 8, display: "flex", flexWrap: "wrap", gap: 6 }}>
+                          {defaultMeetingKeywords.map((kw) => (
+                            <Tag
+                              key={kw}
+                              style={{
+                                margin: 0,
+                                borderRadius: 4,
+                                border: "1px solid #d4d4d4",
+                                background: "#fafafa",
+                                color: "#525252",
+                              }}
+                            >
+                              {kw}
+                            </Tag>
+                          ))}
+                        </div>
+                      </div>
+                    </Space>
+                  ),
+                },
+              ]}
+            />
+          </div>
+        </Space>
+      </Card>
+
+      {/* Work Keywords */}
+      <Card
+        style={{
+          background: "#ffffff",
+          borderRadius: 8,
+          border: "1px solid #e5e5e5",
+        }}
+        styles={{ body: { padding: 20 } }}
+      >
+        <Space direction="vertical" size={16} style={{ width: "100%" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div
+              style={{
+                width: 36,
+                height: 36,
+                background: "linear-gradient(135deg, #262626 0%, #404040 100%)",
+                borderRadius: 8,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Briefcase style={{ fontSize: 16, color: "#ffffff" }} />
+            </div>
+            <div>
+              <Text strong style={{ color: "#262626", fontSize: 15, display: "block" }}>
+                Work Keywords
+              </Text>
+              <Text type="secondary" style={{ fontSize: 12 }}>
+                Add custom work-related terms
+              </Text>
+            </div>
+          </div>
+
+          <Space.Compact style={{ width: "100%" }}>
             <Input
               value={newWorkKeyword}
               onChange={(e) => setNewWorkKeyword(e.target.value)}
               placeholder="e.g., sprint, standup, devops..."
-              onKeyPress={(e) => handleKeyPress(e, handleAddWorkKeyword)}
-              className="flex-1"
+              onPressEnter={handleAddWorkKeyword}
+              size="large"
+              style={{ borderRadius: "8px 0 0 8px", flex: 1 }}
             />
             <Button
+              type="primary"
+              icon={<PlusOutlined />}
               onClick={handleAddWorkKeyword}
               disabled={!newWorkKeyword.trim()}
+              size="large"
+              style={{
+                background: newWorkKeyword.trim()
+                  ? "linear-gradient(135deg, #262626 0%, #404040 100%)"
+                  : "#d4d4d4",
+                border: "none",
+                borderRadius: "0 8px 8px 0",
+                minWidth: 48,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
             >
-              <Plus className="w-4 h-4" />
+              Add
             </Button>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {customWorkKeywords.map((keyword) => (
-              <span
-                key={keyword}
-                className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
-              >
-                {keyword}
-                <button
-                  onClick={() => onRemoveWorkKeyword(keyword)}
-                  className="hover:bg-blue-200 rounded-full p-0.5"
+          </Space.Compact>
+
+          <div style={{ minHeight: 40, display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {customWorkKeywords.length > 0 ? (
+              customWorkKeywords.map((keyword) => (
+                <Tag
+                  key={keyword}
+                  closable
+                  onClose={() => onRemoveWorkKeyword(keyword)}
+                  closeIcon={<CloseOutlined style={{ fontSize: 10 }} />}
+                  style={{
+                    margin: 0,
+                    padding: "4px 12px",
+                    fontSize: 13,
+                    borderRadius: 6,
+                    background: "#262626",
+                    color: "#ffffff",
+                    border: "none",
+                  }}
                 >
-                  <X className="w-3 h-3" />
-                </button>
-              </span>
-            ))}
-            {customWorkKeywords.length === 0 && (
-              <p className="text-gray-500 text-sm">
-                No custom work keywords added
-              </p>
+                  {keyword}
+                </Tag>
+              ))
+            ) : (
+              <Text type="secondary" style={{ fontSize: 13 }}>
+                No custom work keywords added yet
+              </Text>
             )}
           </div>
-        </div>
+        </Space>
+      </Card>
 
-        {/* Meeting Keywords */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">
-            Additional Meeting Keywords
-          </label>
-          <div className="flex gap-2 mb-4">
+      {/* Meeting Keywords */}
+      <Card
+        style={{
+          background: "#ffffff",
+          borderRadius: 8,
+          border: "1px solid #e5e5e5",
+        }}
+        styles={{ body: { padding: 20 } }}
+      >
+        <Space direction="vertical" size={16} style={{ width: "100%" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div
+              style={{
+                width: 36,
+                height: 36,
+                background: "linear-gradient(135deg, #404040 0%, #525252 100%)",
+                borderRadius: 8,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <CalendarOutlined style={{ fontSize: 16, color: "#ffffff" }} />
+            </div>
+            <div>
+              <Text strong style={{ color: "#262626", fontSize: 15, display: "block" }}>
+                Meeting Keywords
+              </Text>
+              <Text type="secondary" style={{ fontSize: 12 }}>
+                Add custom meeting-related terms
+              </Text>
+            </div>
+          </div>
+
+          <Space.Compact style={{ width: "100%" }}>
             <Input
               value={newMeetingKeyword}
               onChange={(e) => setNewMeetingKeyword(e.target.value)}
               placeholder="e.g., webinar, workshop, catchup..."
-              onKeyPress={(e) => handleKeyPress(e, handleAddMeetingKeyword)}
-              className="flex-1"
+              onPressEnter={handleAddMeetingKeyword}
+              size="large"
+              style={{ borderRadius: "8px 0 0 8px", flex: 1 }}
             />
             <Button
+              type="primary"
+              icon={<PlusOutlined />}
               onClick={handleAddMeetingKeyword}
               disabled={!newMeetingKeyword.trim()}
+              size="large"
+              style={{
+                background: newMeetingKeyword.trim()
+                  ? "linear-gradient(135deg, #404040 0%, #525252 100%)"
+                  : "#d4d4d4",
+                border: "none",
+                borderRadius: "0 8px 8px 0",
+                minWidth: 48,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
             >
-              <Plus className="w-4 h-4" />
+              Add
             </Button>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {customMeetingKeywords.map((keyword) => (
-              <span
-                key={keyword}
-                className="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm"
-              >
-                {keyword}
-                <button
-                  onClick={() => onRemoveMeetingKeyword(keyword)}
-                  className="hover:bg-green-200 rounded-full p-0.5"
+          </Space.Compact>
+
+          <div style={{ minHeight: 40, display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {customMeetingKeywords.length > 0 ? (
+              customMeetingKeywords.map((keyword) => (
+                <Tag
+                  key={keyword}
+                  closable
+                  onClose={() => onRemoveMeetingKeyword(keyword)}
+                  closeIcon={<CloseOutlined style={{ fontSize: 10 }} />}
+                  style={{
+                    margin: 0,
+                    padding: "4px 12px",
+                    fontSize: 13,
+                    borderRadius: 6,
+                    background: "#404040",
+                    color: "#ffffff",
+                    border: "none",
+                  }}
                 >
-                  <X className="w-3 h-3" />
-                </button>
-              </span>
-            ))}
-            {customMeetingKeywords.length === 0 && (
-              <p className="text-gray-500 text-sm">
-                No custom meeting keywords added
-              </p>
+                  {keyword}
+                </Tag>
+              ))
+            ) : (
+              <Text type="secondary" style={{ fontSize: 13 }}>
+                No custom meeting keywords added yet
+              </Text>
             )}
           </div>
-        </div>
-
-        {/* Reset Button */}
-        {(customWorkKeywords.length > 0 ||
-          customMeetingKeywords.length > 0) && (
-          <div className="pt-4 border-t border-gray-200">
-            <Button
-              variant="outline"
-              onClick={onResetKeywords}
-              className="text-gray-600"
-            >
-              <RotateCcw className="w-4 h-4 mr-2" />
-              Reset to Defaults
-            </Button>
-          </div>
-        )}
-      </div>
-    </Card>
+        </Space>
+      </Card>
+    </Space>
   );
 };
 
